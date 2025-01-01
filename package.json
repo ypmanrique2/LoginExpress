@@ -8,6 +8,7 @@
     "mysql2": "^3.9.7"
   },
   "scripts": {
+    "start": "node app.js",
     "dev": "node --watch app.js"
   }
 }
