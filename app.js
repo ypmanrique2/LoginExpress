@@ -7,12 +7,14 @@ const session = require('express-session');
 const md5 = require('md5');
 const cors = require('cors');
 
-app.use(cors({
-  origin: process.env.URLFRONTEND || 'http://localhost:5173' || 'https://radiant-hummingbird-4a4f1e.netlify.app/',
+const corsOptions = {
+  origin: process.env.URLFRONTEND || 'http://localhost:5173' || 'https://radiant-hummingbird-4a4f1e.netlify.app',
   methods: ['GET', 'POST', 'DELETE', 'PUT'],  // Métodos permitidos
   allowedHeaders: ['Content-Type'],  // Cabeceras permitidas
   credentials: true
-}));
+};
+
+app.use(cors(corsOptions));
 
 app.use(session({
   secret: process.env.SECRETSESSION || 'asdf',
