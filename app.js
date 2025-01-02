@@ -3,16 +3,16 @@ const app = express()
 const port = process.env.PORT || 3000
 // Get the client
 const mysql = require('mysql2/promise');
-const cors = require('cors')
 const session = require('express-session')
 const md5 = require('md5');
+const cors = require('cors')
 
 app.use(cors({
   origin: process.env.URLFRONTEND || 'http://localhost:5173',
   credentials: true
 }))
 app.use(session({
-  secret: process.env.SECRETSESSION || 'asdlfkfso3234o23lsdflasdfasdfasdfoasdf',
+  secret: process.env.SECRETSESSION || 'asdf',
   proxy: true,
   cookie: {
     sameSite: 'none',
