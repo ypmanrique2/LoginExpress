@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000 || 10000;
+const port = 10000 || process.env.PORT || 3000;
 // Get the client
 const mysql = require('mysql2/promise');
 const session = require('express-session');
@@ -8,7 +8,7 @@ const md5 = require('md5');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: process.env.URLFRONTEND || 'http://localhost:5173' || 'https://radiant-hummingbird-4a4f1e.netlify.app',
+  origin: 'https://radiant-hummingbird-4a4f1e.netlify.app' || 'http://localhost:5173' ||  process.env.URLFRONTEND,
   methods: ['GET', 'POST', 'DELETE', 'PUT'],  // Métodos permitidos
   allowedHeaders: ['Content-Type'],  // Cabeceras permitidas
   credentials: true
@@ -72,6 +72,7 @@ app.post('/login', async (req, res) => {  // Cambiar de GET a POST
     console.log(err);
     res.status(500).send('Error al iniciar sesión');
   }
+  res.json({ success: true });
 });
 
 app.get('/validar', (req, res) => {
@@ -80,6 +81,7 @@ app.get('/validar', (req, res) => {
   } else {
     res.status(401).send('No autorizado')
   }
+  res.json({ valid: true });
 })
 
 app.post('/registrar', (req, res) => {
@@ -144,5 +146,5 @@ app.delete('/usuarios', async function usuarios(req, res) { //request, response
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening on port ${port}`)
+  console.log(`Servidor corriendo en el puerto ${port}`)
 })
