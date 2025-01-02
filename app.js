@@ -1,16 +1,17 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
 const port = process.env.PORT || 3000
 // Get the client
 const mysql = require('mysql2/promise');
-const session = require('express-session')
+const session = require('express-session');
 const md5 = require('md5');
-const cors = require('cors')
+const cors = require('cors');
 
 app.use(cors({
   origin: process.env.URLFRONTEND || 'http://localhost:5173' || 'https://radiant-hummingbird-4a4f1e.netlify.app/',
   credentials: true
 }))
+
 app.use(session({
   secret: process.env.SECRETSESSION || 'asdf',
   proxy: true,
@@ -30,9 +31,11 @@ const connection = mysql.createPool({
   port: process.env.PORTDB || 3306 || 3306,
 });
 
+app.use(express.json()); // Middleware para analizar cuerpos JSON
 app.get('/', (req, res) => {
   res.send('Hello World!')
 })
+
 app.get('/login', async (req, res) => { //req = request, peticion; res = response, respuesta
   const datos = req.query;
   // A simple SELECT query
@@ -52,7 +55,6 @@ app.get('/login', async (req, res) => { //req = request, peticion; res = respons
     } else {
       res.status(401).send('Datos incorrectos')
     }
-
     console.log(results); // results contains rows returned by server
     console.log(fields); // fields contains extra meta data about results, if available
   } catch (err) {
@@ -60,6 +62,7 @@ app.get('/login', async (req, res) => { //req = request, peticion; res = respons
     res.status(500).send('Error al iniciar sesión')
   }
 })
+
 app.get('/validar', (req, res) => {
   if (req.session.usuario) {
     res.status(200).send('Sesión validada')
@@ -69,24 +72,28 @@ app.get('/validar', (req, res) => {
 })
 
 app.post('/registrar', async (req, res) => {
-  if (!req.session.usuario) {
-    res.status(401).send('No autorizado');
-    return;
+  console.log('Cuerpo de la solicitud:', req.body); // Loguea el cuerpo de la solicitud
+  if (!req.body || !req.body.usuario || !req.body.clave) {
+    return res.status(400).send('Faltan datos en la solicitud');
   }
-  const datos = req.body; // Usamos req.body para obtener los datos enviados en el cuerpo de la solicitud
+  const { usuario, clave } = req.body;  // Ahora se puede acceder a req.body.usuario y req.body.clave
+  console.log('Usuario recibido:', usuario); // Verifica los datos que están llegando
   try {
-    const [results, fields] = await connection.query(
+    // Verifica que se reciban los datos correctamente
+    console.log('Datos recibidos para registrar:', datos);
+    // Inserta el nuevo usuario en la base de datos
+    const [results] = await connection.query(
       "INSERT INTO `usuarios` (`id`, `usuario`, `clave`) VALUES (NULL, ?, ?);",
-      [datos.usuario, md5(datos.clave)]
+      [datos.usuario, md5(datos.clave)] // MD5 para la clave
     );
     if (results.affectedRows > 0) {
       req.session.usuario = datos.usuario;
       res.status(201).send('Usuario registrado');
     } else {
-      res.status(401).send('Error al registrar Usuario');
+      res.status(400).send('Error al registrar Usuario');
     }
   } catch (err) {
-    console.log(err);
+    console.error('Error en el registro:', err); // Agrega un log más detallado para identificar el error
     res.status(500).send('Error al registrar Usuario');
   }
 });
