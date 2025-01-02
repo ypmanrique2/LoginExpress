@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = process.env.PORT || 3000
+const port = process.env.PORT || 3000 || 10000;
 // Get the client
 const mysql = require('mysql2/promise');
 const session = require('express-session');
@@ -9,8 +9,10 @@ const cors = require('cors');
 
 app.use(cors({
   origin: process.env.URLFRONTEND || 'http://localhost:5173' || 'https://radiant-hummingbird-4a4f1e.netlify.app/',
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],  // Métodos permitidos
+  allowedHeaders: ['Content-Type'],  // Cabeceras permitidas
   credentials: true
-}))
+}));
 
 app.use(session({
   secret: process.env.SECRETSESSION || 'asdf',
