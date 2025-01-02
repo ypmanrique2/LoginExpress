@@ -8,7 +8,7 @@ const md5 = require('md5');
 const cors = require('cors')
 
 app.use(cors({
-  origin: process.env.URLFRONTEND || 'http://localhost:5173',
+  origin: process.env.URLFRONTEND || 'http://localhost:5173' || 'https://radiant-hummingbird-4a4f1e.netlify.app/',
   credentials: true
 }))
 app.use(session({
@@ -68,13 +68,12 @@ app.get('/validar', (req, res) => {
   }
 })
 
-app.get('/registrar', async (req, res) => {
+app.post('/registrar', async (req, res) => {
   if (!req.session.usuario) {
-    res.status(401).send('No autorizado')
-    return
+    res.status(401).send('No autorizado');
+    return;
   }
-  const datos = req.query;
-  // A simple SELECT query
+  const datos = req.body; // Usamos req.body para obtener los datos enviados en el cuerpo de la solicitud
   try {
     const [results, fields] = await connection.query(
       "INSERT INTO `usuarios` (`id`, `usuario`, `clave`) VALUES (NULL, ?, ?);",
@@ -82,18 +81,15 @@ app.get('/registrar', async (req, res) => {
     );
     if (results.affectedRows > 0) {
       req.session.usuario = datos.usuario;
-      res.status(201).send('Usuario registrado')
+      res.status(201).send('Usuario registrado');
     } else {
-      res.status(401).send('Error al registrar Usuario')
+      res.status(401).send('Error al registrar Usuario');
     }
-
-    console.log(results); // results contains rows returned by server
-    console.log(fields); // fields contains extra meta data about results, if available
   } catch (err) {
     console.log(err);
-    res.status(500).send('Error al registrar Usuario')
+    res.status(500).send('Error al registrar Usuario');
   }
-})
+});
 
 app.get('/usuarios', async function usuarios(req, res) { //request, response 
   if (!req.session.administrador) {
