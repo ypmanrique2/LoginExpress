@@ -23,11 +23,11 @@ app.use(session({
 
 // Create the connection to database
 const connection = mysql.createPool({
-  host: process.env.HOSTDB || 'localhost',
-  user: process.env.USERDB || 'root',
-  database: process.env.DB || 'login',
-  password: process.env.PASSWORDDB || '',
-  port: process.env.PORTDB || 3306
+  host: process.env.HOSTDB || 'localhost' || 'sql10.freemysqlhosting.net',
+  user: process.env.USERDB || 'root' || 'sql10755184',
+  database: process.env.DB || 'login' || 'sql10755184',
+  password: process.env.PASSWORDDB || '' || 'CpUS9vuFpB',
+  port: process.env.PORTDB || 3306 || 3306,
 });
 
 app.get('/', (req, res) => {
