@@ -90,7 +90,7 @@ app.post('/registrar', (req, res) => {
   console.log('Usuario recibido:', usuario);
   
   // Inserta el nuevo usuario en la base de datos
-  db.query('INSERT INTO usuarios (usuario, clave) VALUES (?, ?)', [usuario, clave], (err, result) => {
+  connection.query('INSERT INTO usuarios (usuario, clave) VALUES (?, ?)', [usuario, clave], (err, result) => {
     if (err) {
       console.log('Error en el registro:', err);
       return res.status(500).send('Error en el registro');
