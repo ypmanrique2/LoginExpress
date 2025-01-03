@@ -30,7 +30,7 @@ app.use(session({
     secure: true,
   }
 }));
-// app.set("trust proxy", 1);
+app.set("trust proxy", 1);
 
 // Create the connection to database
 const connection = mysql.createPool({
