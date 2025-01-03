@@ -28,7 +28,7 @@ app.use(session({
   proxy: true,
   cookie: {
     sameSite: 'none',
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
   }
 }));
 app.set("trust proxy", 1);
@@ -64,13 +64,14 @@ app.post('/login', async (req, res) => {
     
     if (results.length > 0) {
       req.session.usuario = usuario;
-
-      if (results[0].rol === 'ADMINISTRADOR') {
+      req.session.administrador = results[0].rol === 'ADMINISTRADOR'; // Asegúrate de asignar correctamente el rol
+      return res.status(200).json({ rol: results[0].rol }); // Devuelve el rol al frontend
+/*       if (results[0].rol === 'ADMINISTRADOR') {
         req.session.administrador = true;
         return res.status(200).json({ rol: 'ADMINISTRADOR' });
       }
       
-      return res.status(200).json({ rol: 'USUARIO' });
+      return res.status(200).json({ rol: 'USUARIO' }); */
     } else {
       return res.status(401).send('Datos incorrectos');
     }
@@ -82,12 +83,11 @@ app.post('/login', async (req, res) => {
 
 app.get('/validar', (req, res) => {
   if (req.session.usuario) {
-    res.status(200).send('Sesión validada')
+    res.status(200).json({ valid: true });
   } else {
-    res.status(401).send('No autorizado')
+    res.status(401).json({ valid: false });
   }
-  res.json({ valid: true });
-})
+});
 
 app.post('/registrar', async (req, res) => {
   const { usuario, clave } = req.body;
