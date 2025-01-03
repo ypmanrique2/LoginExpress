@@ -8,9 +8,13 @@ const md5 = require('md5');
 const cors = require('cors');
 
 const corsOptions = {
-  origin: 'https://radiant-hummingbird-4a4f1e.netlify.app' || 'http://localhost:5173' || process.env.URLFRONTEND,
-  methods: ['GET', 'POST', 'DELETE', 'PUT'],  // Métodos permitidos
-  allowedHeaders: ['Content-Type'],  // Cabeceras permitidas
+  origin: [
+    'https://radiant-hummingbird-4a4f1e.netlify.app', // producción
+    'http://localhost:5173',                         // desarrollo
+    process.env.URLFRONTEND,                         // url desde env (si existe)
+  ],
+  methods: ['GET', 'POST', 'DELETE', 'PUT'],
+  allowedHeaders: ['Content-Type'],
   credentials: true
 };
 
@@ -18,12 +22,14 @@ app.use(cors(corsOptions));
 
 app.use(session({
   secret: process.env.SECRETSESSION || 'asdf',
+  resave: false,  // No guardar la sesión si no ha cambiado
+  saveUninitialized: false,  // No guardar sesiones no inicializadas
   proxy: true,
   cookie: {
     sameSite: 'none',
     secure: true,
   }
-}))
+}));
 // app.set("trust proxy", 1);
 
 // Create the connection to database
@@ -32,7 +38,7 @@ const connection = mysql.createPool({
   user: process.env.USERDB || 'root' || 'sql10755184',
   database: process.env.DB || 'login' || 'sql10755184',
   password: process.env.PASSWORDDB || '' || 'CpUS9vuFpB',
-  port: process.env.PORTDB || 3306 || 3306,
+  port: process.env.PORTDB || 3306 || 3000,
 });
 
 app.use((err, req, res, next) => {
