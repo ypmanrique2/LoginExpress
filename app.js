@@ -89,22 +89,18 @@ app.get('/validar', (req, res) => {
 })
 
 app.post('/registrar', async (req, res) => {
-  // Obtener los datos del body de la solicitud
   const { usuario, clave } = req.body;
 
-  // Verificar que ambos campos estén presentes
   if (!usuario || !clave) {
     return res.status(400).send('Faltan datos en la solicitud');
   }
 
   try {
-    // Inserta el nuevo usuario en la base de datos
     const [result] = await connection.query(
-      'INSERT INTO usuarios (usuario, clave) VALUES (?, ?)',
-      [usuario, md5(clave)] // Usar md5 para la clave si es necesario
+      'INSERT INTO usuarios (usuario, clave, rol) VALUES (?, ?, "USUARIO")',  // Establece "USUARIO" como valor por defecto
+      [usuario, md5(clave)]
     );
 
-    // Si todo va bien, responde con éxito
     res.status(200).send('Usuario registrado');
   } catch (err) {
     console.error('Error en el registro:', err);
