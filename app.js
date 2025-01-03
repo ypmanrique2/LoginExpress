@@ -89,34 +89,27 @@ app.get('/validar', (req, res) => {
 })
 
 app.post('/registrar', async (req, res) => {
-  const BASE_URL = process.env.NODE_ENV === 'production'
-    ? 'https://loginexpress-1-8pdh.onrender.com'  // URL del backend en producción
-    : 'http://localhost:10000';  // URL del backend en desarrollo
-  const peticion = await fetch(`${BASE_URL}/registrar`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({
-      usuario: usuarioRegistro,
-      clave: claveRegistro,
-    }),
-  });
-  console.log('Cuerpo de la solicitud:', req.body); // Verifica qué datos están llegando en el cuerpo de la solicitud
+  // Obtener los datos del body de la solicitud
   const { usuario, clave } = req.body;
+
+  // Verificar que ambos campos estén presentes
   if (!usuario || !clave) {
     return res.status(400).send('Faltan datos en la solicitud');
   }
-  console.log('Usuario recibido:', usuario);
-  // Inserta el nuevo usuario en la base de datos
-  connection.query('INSERT INTO usuarios (usuario, clave) VALUES (?, ?)', [usuario, clave], (err, result) => {
-    if (err) {
-      console.log('Error en el registro:', err);
-      return res.status(500).send('Error en el registro');
-    }
+
+  try {
+    // Inserta el nuevo usuario en la base de datos
+    const [result] = await connection.query(
+      'INSERT INTO usuarios (usuario, clave) VALUES (?, ?)',
+      [usuario, md5(clave)] // Usar md5 para la clave si es necesario
+    );
+
     // Si todo va bien, responde con éxito
     res.status(200).send('Usuario registrado');
-  });
+  } catch (err) {
+    console.error('Error en el registro:', err);
+    return res.status(500).send('Error en el registro');
+  }
 });
 
 app.get('/usuarios', async function usuarios(req, res) { //request, response 
