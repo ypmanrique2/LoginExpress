@@ -9,13 +9,14 @@ const cors = require('cors');
 
 const corsOptions = {
   origin: [
-    'https://radiant-hummingbird-4a4f1e.netlify.app', // producción
-    'http://localhost:5173',                         // desarrollo
-    process.env.URLFRONTEND,                         // url desde env (si existe)
+    'https://radiant-hummingbird-4a4f1e.netlify.app', // frontend desplegado
+    'http://localhost:5173',                         // para desarrollo local
   ],
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
   allowedHeaders: ['Content-Type'],
-  credentials: true
+  credentials: true, // Importante para manejar cookies de sesión
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 };
 
 app.use(cors(corsOptions));
