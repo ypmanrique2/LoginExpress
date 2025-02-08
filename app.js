@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 12655 || process.env.PORT || 3306;
+const port = process.env.PORT || 12655 || 3306;
 // Get the client
 const mysql = require('mysql2/promise');
 const session = require('express-session');
@@ -16,6 +16,7 @@ const corsOptions = {
   allowedHeaders: ['Content-Type'],
   credentials: true, // Importante para manejar cookies de sesión
   preflightContinue: false,
+  sameSite: 'none',
   optionsSuccessStatus: 204
 };
 
@@ -43,8 +44,10 @@ const connection = mysql.createPool({
 });
 
 app.use((err, req, res, next) => {
-  console.error('Error interno:', err);
-  res.status(500).send('Error interno del servidor');
+/*   console.error('Error interno:', err);
+  res.status(500).send('Error interno del servidor'); */
+  console.log('CORS headers:', req.headers);
+  next();
 });
 
 app.use(express.json()); // Middleware para analizar cuerpos JSON
