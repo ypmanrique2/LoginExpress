@@ -9,12 +9,12 @@ const cors = require('cors');
 
 const corsOptions = {
   origin: [
-    'https://vermillion-babka-8fa83b.netlify.app', // frontend desplegado
-    'http://localhost:5173',                         // para desarrollo local
+    'https://vermillion-babka-8fa83b.netlify.app', // Producción
+    'http://localhost:5173',                         // Desarrollo local
   ],
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
   allowedHeaders: ['Content-Type'],
-  credentials: true, // Importante para manejar cookies de sesión
+  credentials: true, // Necesario para compartir cookies
   preflightContinue: false,
   sameSite: 'none',
   optionsSuccessStatus: 204
@@ -36,11 +36,11 @@ app.set("trust proxy", 1);
 
 // Create the connection to database
 const connection = mysql.createPool({
-  host: process.env.HOSTDB || 'mysql-conversor-soy-7596.i.aivencloud.com' || 'localhost' ,
-  user: process.env.USERDB || 'avnadmin' || 'root' ,
-  database: process.env.DB || 'defaultdb' || 'login' ,
-  password: process.env.PASSWORDDB || 'AVNS_QbjHj-vGWZmBnhv3u0L' || '' ,
-  port: process.env.PORTDB || 12655 || 3306 ,
+  host: process.env.HOSTDB || 'mysql-conversor-soy-7596.i.aivencloud.com' || 'localhost',
+  user: process.env.USERDB || 'avnadmin' || 'root',
+  database: process.env.DB || 'defaultdb' || 'login',
+  password: process.env.PASSWORDDB || 'AVNS_QbjHj-vGWZmBnhv3u0L' || '',
+  port: process.env.PORTDB || 12655 || 3306,
 });
 
 app.use((err, req, res, next) => {
