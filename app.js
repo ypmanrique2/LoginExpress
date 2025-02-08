@@ -1,6 +1,6 @@
 const express = require('express');
 const app = express();
-const port = 10000 || process.env.PORT || 3000;
+const port = 12655 || process.env.PORT || 3306;
 // Get the client
 const mysql = require('mysql2/promise');
 const session = require('express-session');
@@ -9,7 +9,7 @@ const cors = require('cors');
 
 const corsOptions = {
   origin: [
-    'https://radiant-hummingbird-4a4f1e.netlify.app', // frontend desplegado
+    'https://vermillion-babka-8fa83b.netlify.app', // frontend desplegado
     'http://localhost:5173',                         // para desarrollo local
   ],
   methods: ['GET', 'POST', 'DELETE', 'PUT'],
@@ -35,11 +35,11 @@ app.set("trust proxy", 1);
 
 // Create the connection to database
 const connection = mysql.createPool({
-  host: process.env.HOSTDB || 'localhost' || 'sql10.freemysqlhosting.net',
-  user: process.env.USERDB || 'root' || 'sql10755184',
-  database: process.env.DB || 'login' || 'sql10755184',
-  password: process.env.PASSWORDDB || '' || 'CpUS9vuFpB',
-  port: process.env.PORTDB || 3306 || 3000,
+  host: process.env.HOSTDB || 'mysql-conversor-soy-7596.i.aivencloud.com' || 'localhost' ,
+  user: process.env.USERDB || 'avnadmin' || 'root' ,
+  database: process.env.DB || 'defaultdb' || 'login' ,
+  password: process.env.PASSWORDDB || 'AVNS_QbjHj-vGWZmBnhv3u0L' || '' ,
+  port: process.env.PORTDB || 12655 || 3306 ,
 });
 
 app.use((err, req, res, next) => {
@@ -64,7 +64,7 @@ app.post('/login', async (req, res) => {
     
     if (results.length > 0) {
       req.session.usuario = usuario;
-      req.session.administrador = results[0].rol === 'ADMINISTRADOR'; // Asegúrate de asignar correctamente el rol
+      req.session.administrador = results[0].rol === 'ADMINISTRADOR'; // el rol
       return res.status(200).json({ rol: results[0].rol }); // Devuelve el rol al frontend
 /*       if (results[0].rol === 'ADMINISTRADOR') {
         req.session.administrador = true;
